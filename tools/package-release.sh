@@ -33,7 +33,7 @@ mkdir -p "$STAGE"
 cp -R ClauEd.app "$STAGE/"
 cp README.md AGENTS.md CHANGELOG.md LICENSE NOTICE "$STAGE/"
 mkdir -p "$STAGE/docs" "$STAGE/extras"
-cp extras/AppIcon-preview.png "$STAGE/extras/"
+cp extras/AppIcon-preview.png extras/splash-light.gif extras/splash-dark.gif "$STAGE/extras/"
 cp docs/*.md "$STAGE/docs/"
 cp claude-splash-settings.command claude-splash-watch-on.command \
    claude-splash-off.command claude-splash-uninstall.command "$STAGE/"

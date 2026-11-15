@@ -6,6 +6,14 @@
   <p>An unofficial, standalone startup-screen launcher for Claude Desktop on macOS.</p>
 </div>
 
+## 双主题预览
+
+| 亮色主题 | 暗色主题 |
+|---|---|
+| ![ClauEd 亮色开屏动画](extras/splash-light.gif) | ![ClauEd 暗色开屏动画](extras/splash-dark.gif) |
+
+实际开屏录制；预览使用 `speed=1.6`，关闭语音与交互等待。
+
 ## 致敬与来源
 
 特别致敬 **沈宏宏** 的 [dsh-startup-screen](https://github.com/6shenhonghong9/dsh-startup-screen)。
