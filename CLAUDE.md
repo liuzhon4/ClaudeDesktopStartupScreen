@@ -28,6 +28,4 @@ python3 -m http.server 8765 --bind 127.0.0.1 # 浏览器预览 fork/splash.html?
 
 - [README.md](README.md) 用户手册
 - [AGENTS.md](AGENTS.md) 项目规则与代码地图
-- [audit-report-2026-11-14.md](docs/audit-report-2026-11-14.md) 全项目审计报告与处置结果
 - [备份与恢复方案（Safe Mode · 外部关闭）.md](docs/备份与恢复方案（Safe%20Mode%20·%20外部关闭）.md) 关闭/恢复
-- [Claude Desktop 开屏移植评估.md](docs/Claude%20Desktop%20开屏移植评估.md)、[开屏方案 v2…](docs/开屏方案%20v2（暗色自适应%20·%20音频复用%20·%20豪叔）.md) 设计依据（历史存档，含已禁用命令，勿照做）

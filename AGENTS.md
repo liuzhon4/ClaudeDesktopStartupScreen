@@ -58,7 +58,7 @@ python3 -m http.server 8765 --bind 127.0.0.1          # 浏览器预览 fork/spl
 ## 文档维护
 
 - 改了配置字段 → 同步 `README.md` 的配置表、`extras/config.example.json`、`src/main.swift` 默认值；需要图形化编辑时同步 `src/settings.swift`。
-- 改了品牌/文案 → 同步 README「它是什么」与 `开屏方案 v2…md` 相应段落。
+- 改了品牌/文案 → 同步 README 的现行说明。
 - 换了构建产物名 → README、AGENTS、CLAUDE.md、两个 `.command` 脚本、`备份与恢复方案`。
 - 改了监听器 / 直通出口 / 黑幕行为 → 同步 README「Claude 启动监听」小节与 `备份与恢复方案` §3、§5、§7。
 - 新增验证 → 更新 README「验证记录」与下列文档的状态。
@@ -67,9 +67,6 @@ python3 -m http.server 8765 --bind 127.0.0.1          # 浏览器预览 fork/spl
 ## 文档索引
 
 - [README.md](README.md) — 用户手册
-- [audit-report-2026-11-14.md](docs/audit-report-2026-11-14.md) — 全项目审计报告（50 条确认发现与处置结果；审计证据，不要改写）
-- [Claude Desktop 开屏移植评估.md](docs/Claude%20Desktop%20开屏移植评估.md) — 源码解剖 / 环境勘测 / 方案选型（含 CDP guard 证据）
-- [开屏方案 v2（暗色自适应 · 音频复用 · 豪叔）.md](docs/开屏方案%20v2（暗色自适应%20·%20音频复用%20·%20豪叔）.md) — 暗色规范与实施清单
 - [备份与恢复方案（Safe Mode · 外部关闭）.md](docs/备份与恢复方案（Safe%20Mode%20·%20外部关闭）.md) — 5 级开关与诊断
 - [Claude Desktop 美化方案调研.md](docs/Claude%20Desktop%20美化方案调研.md) — 最初的宏观调研（历史存档，CDP 路线已封死）
 

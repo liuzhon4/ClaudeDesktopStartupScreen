@@ -173,9 +173,6 @@ docs/                   整理后的设计、审计与恢复文档
 
 - [项目规则与代码地图](AGENTS.md)
 - [更新记录](CHANGELOG.md)
-- [全项目审计报告](docs/audit-report-2026-11-14.md)
-- [Claude Desktop 开屏移植评估](docs/Claude%20Desktop%20开屏移植评估.md)
-- [开屏方案 v2](docs/开屏方案%20v2（暗色自适应%20·%20音频复用%20·%20豪叔）.md)
 - [备份与恢复方案](docs/备份与恢复方案（Safe%20Mode%20·%20外部关闭）.md)
 
 ## 许可与致谢

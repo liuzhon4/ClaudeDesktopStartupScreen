@@ -4,7 +4,7 @@
 
 > 面向 gateway（3P）模式 · 调研时间 2026-11 · 全部为非官方方案，涉及修改客户端的行为请自行评估账号与条款风险。
 
-> **2026-11-13 更新**：本文推荐的 CDP 注入（Theme Agent）路线在当前 Claude Desktop 5.11492.2 上已被主进程启动守卫封死（`--remote-debugging-port` 会直接 exit 1）。最终落地方案见《Claude Desktop 开屏移植评估.md》《开屏方案 v2（暗色自适应 · 音频复用 · 豪叔）.md》与 `ClauEd.app`。本文保留为调研存档。
+> **2026-11-13 更新**：本文推荐的 CDP 注入（Theme Agent）路线在当前 Claude Desktop 5.11492.2 上已被主进程启动守卫封死（`--remote-debugging-port` 会直接 exit 1）。最终落地为独立的 `ClauEd.app` 外挂启动器。本文保留为调研存档。
 
 ## 0. 结论先行
 

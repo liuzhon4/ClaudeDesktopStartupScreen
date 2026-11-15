@@ -16,7 +16,7 @@
 - 身份卡：`identityId: "auto"` 显示当天日期（本地时区 `YYYYMMDD`）；`accessLevel: "auto"` 显示最近 Code 会话的模型与 effort（如 `FABLE 5 · MAX`），读不到回退 `PRO`
 - 监听器：修复屏幕参数变化重建黑幕时的过度释放崩溃（程序化 `NSWindow` 默认 `isReleasedWhenClosed=true`，ARC 下 `close()` 会二次释放）；该崩溃会触发 KeepAlive 重启，使 20s 启动宽限反复吞掉 Claude 启动、开屏不出现
 - 新增受控只读：`Claude*/claude-code-sessions/**/local_*.json` 的 `model` / `effort` / `lastFocusedAt` / `isArchived`（不读 title 或会话内容），AGENTS/CLAUDE 红线条款已同步
-- 审计：7 维度并行 + 三视角对抗复核 + 补漏，确认 50 条问题，报告见 `docs/audit-report-2026-11-14.md`
+- 审计：7 维度并行 + 三视角对抗复核 + 补漏，确认 50 条问题；处置已落实到代码与现行文档
 - 修复 CSS 全局 reset 特异性事故：`#dsh-startup-root *` 压掉 17 处组件 margin/padding（按钮内边距、欢迎框、星芒间距全部归零），改为 `:where()`
 - 修复互动步骤 520ms 输入死区：按钮出现后立即挂监听；同一 click 事件不会误触下一步
 - `.dsu-black` 与进度条/声纹/页脚/四角/扫描线不再拦截鼠标
