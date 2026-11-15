@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ClauEd · 液态玻璃 demo</title>
+<link rel="stylesheet" href="../fork/splash.css">
+<style>
+  html, body { margin: 0; height: 100%; overflow: hidden; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif;
+    background:
+      radial-gradient(1100px 760px at 18% 22%, #4d6f9c 0%, rgba(77,111,156,0) 62%),
+      radial-gradient(900px 700px at 82% 26%, #9a5f82 0%, rgba(154,95,130,0) 60%),
+      radial-gradient(1000px 900px at 54% 96%, #2d5468 0%, rgba(45,84,104,0) 62%),
+      linear-gradient(158deg, #0e141c 0%, #211d33 48%, #0b1016 100%);
+  }
+
+  /* —— 假桌面：菜单栏 + 一个 Claude 窗口，用来透出玻璃背后的内容 —— */
+  .desk { position: fixed; inset: 0; pointer-events: none; }
+  .menubar {
+    position: absolute; left: 0; right: 0; top: 0; height: 28px;
+    display: flex; align-items: center; gap: 18px; padding: 0 18px;
+    background: rgba(20, 18, 16, 0.34);
+    color: rgba(255,255,255,.86); font-size: 12px; letter-spacing: .02em;
+    backdrop-filter: blur(18px);
+  }
+  .menubar b { font-weight: 600; }
+  .menubar .sp { flex: 1; }
+
+  .mock-window {
+    position: absolute; left: 7%; top: 15%; width: 58%; height: 68%;
+    display: flex; overflow: hidden;
+    border-radius: 16px;
+    background: rgba(250, 247, 240, 0.94);
+    box-shadow: 0 30px 90px rgba(0,0,0,.45), 0 0 0 1px rgba(255,255,255,.18) inset;
+    color: #1c1a18;
+  }
+  .mock-side {
+    width: 30%; padding: 18px 14px;
+    background: rgba(24, 22, 20, 0.92);
+    border-right: 1px solid rgba(255, 255, 255, 0.08);
+    color: #f5f0e6; font-size: 12px;
+  }
+  .mock-side b { display: block; font-size: 15px; margin-bottom: 16px; }
+  .mock-side div { padding: 8px 9px; border-radius: 8px; color: #cfc8bd; }
+  .mock-side div.on { background: rgba(204,120,92,.3); color: #ffd9c9; font-weight: 600; }
+  .mock-chat { flex: 1; padding: 26px 30px; display: flex; flex-direction: column; gap: 14px; }
+  .mock-chat h2 { margin: 0 0 6px; font-size: 21px; font-weight: 600; letter-spacing: -.01em; }
+  .mock-chat p { margin: 0; font-size: 13px; line-height: 1.6; color: #55514b; max-width: 80%; }
+  .bubble { align-self: flex-end; background: #e9e3d8; border-radius: 12px 12px 3px 12px; padding: 10px 13px; font-size: 13px; max-width: 64%; }
+  .card-row { display: flex; gap: 10px; margin-top: 4px; }
+  .card { flex: 1; height: 58px; border-radius: 10px; background: linear-gradient(135deg, #efe9dd, #e2d9ca); border: 1px solid rgba(28,26,24,.07); }
+  .card:nth-child(2) { background: linear-gradient(135deg, #e7edf2, #d8e2ea); }
+  .card:nth-child(3) { background: linear-gradient(135deg, #efe3e0, #e6d3cd); }
+
+  .mock-dock {
+    position: absolute; left: 50%; bottom: 14px; transform: translateX(-50%);
+    display: flex; gap: 10px; padding: 8px 12px; border-radius: 18px;
+    background: rgba(255,255,255,.14); backdrop-filter: blur(20px);
+  }
+  .mock-dock i { width: 34px; height: 34px; border-radius: 9px; background: linear-gradient(160deg, #f3eee6, #cfc6b8); opacity: .9; }
+
+  /* —— 控制面板：位于开屏之上，只存在于 demo —— */
+  .demo-panel {
+    position: fixed; right: 18px; top: 42px; z-index: 2147483647;
+    width: 258px; padding: 14px 16px 12px;
+    border-radius: 14px;
+    background: rgba(16, 18, 22, 0.84);
+    color: #f6f3ed;
+    font-size: 13px;
+    box-shadow: 0 12px 40px rgba(0,0,0,.35);
+    backdrop-filter: blur(22px) saturate(140%);
+    -webkit-backdrop-filter: blur(22px) saturate(140%);
+  }
+  .demo-panel .head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 10px; }
+  .demo-panel .head b { font-size: 14px; letter-spacing: .02em; }
+  .demo-panel .head span { opacity: .72; font-size: 12px; }
+  .demo-panel label { display: block; margin: 9px 0 2px; opacity: .94; }
+  .demo-panel label.row { display: flex; align-items: center; gap: 8px; margin: 10px 0 6px; }
+  .demo-panel input[type=range] { width: 100%; accent-color: #cc785c; }
+  .demo-panel .val { float: right; opacity: .78; font-variant-numeric: tabular-nums; }
+  .demo-panel .btns { display: flex; gap: 8px; margin-top: 12px; }
+  .demo-panel button {
+    flex: 1; padding: 7px 0; border-radius: 8px; border: 1px solid rgba(255,255,255,.2);
+    background: rgba(255,255,255,.09); color: #f6f3ed; font-size: 13px; cursor: pointer;
+  }
+  .demo-panel button:hover { background: rgba(255,255,255,.16); }
+  .demo-panel .note { margin-top: 10px; font-size: 12px; line-height: 1.5; opacity: .72; }
+  .demo-panel.hide { display: none; }
+</style>
+</head>
+<body>
+
+<div class="desk" aria-hidden="true">
+  <div class="menubar">
+    <b>Claude</b><span>文件</span><span>编辑</span><span>显示</span><span>窗口</span>
+    <span class="sp"></span><span>11-14 周五 09:41</span>
+  </div>
+  <div class="mock-window">
+    <div class="mock-side">
+      <b>Claude</b>
+      <div class="on">新对话</div>
+      <div>关于开屏动画</div>
+      <div>项目审计</div>
+      <div>语音与音色</div>
+      <div>ClauEd 启动器</div>
+    </div>
+    <div class="mock-chat">
+      <h2>关于开屏动画</h2>
+      <p>这是一个用来演示「液态玻璃」的假窗口。开屏底板会半透明并磨砂，背后的文字和色块会变成柔和的色晕。</p>
+      <div class="bubble">如果玻璃透过去还能看出内容，但又看不清细节，就说明参数对了。</div>
+      <p>拖动右侧滑杆可以实时调整不透明度、磨砂半径和饱和度。</p>
+      <div class="card-row"><div class="card"></div><div class="card"></div><div class="card"></div></div>
+    </div>
+  </div>
+  <div class="mock-dock"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+</div>
+
+<div id="dsh-startup-root" class="dsu-root dsu-boot"></div>
+
+<div class="demo-panel" id="panel">
+  <div class="head"><b>液态玻璃 · demo</b><span>H 隐藏</span></div>
+  <label class="row"><input type="checkbox" id="glassOn" checked> 启用玻璃</label>
+  <label>不透明度 <span class="val" id="opv">0.45</span><input type="range" id="op" min="30" max="90" value="45"></label>
+  <label>玻璃磨砂 <span class="val" id="blv">14px</span><input type="range" id="bl" min="0" max="40" value="14"></label>
+  <label>饱和度 <span class="val" id="sav">150%</span><input type="range" id="sa" min="100" max="200" value="150"></label>
+  <label>背景层模糊 <span class="val" id="bdv">0px</span><input type="range" id="bd" min="0" max="40" value="0"></label>
+  <div class="btns"><button id="themeBtn">切换深色</button><button id="replayBtn">重播</button></div>
+  <div class="note">demo 用页面里的假桌面模拟窗口背后的内容；真实 app 要看到桌面，还需要把宿主窗口和 WebView 改成透明。</div>
+</div>
+
+<script>
+  /* 配置必须在 splash.js 之前写好 */
+  (function () {
+    var q = new URLSearchParams(location.search)
+    var theme = q.get('theme') === 'dark' ? 'dark' : 'light'
+    window.__DSH_STARTUP__ = {
+      enabled: true,
+      mode: 'always',
+      theme: theme,
+      speed: 1,
+      requireInteraction: true,
+      allowSkip: false,
+      sound: false,
+      voice: false,
+      voiceSource: 'tts',
+      identity: 'OPERATOR',
+      identityId: '0087',
+      accessLevel: 'PRO',
+      welcomeBox: 'CLAUDE',
+      glass: true,
+      glassOpacity: 0.45,
+      glassBlur: 14,
+      glassSaturate: 150,
+      glassBackdropBlur: 0
+    }
+  })()
+</script>
+<script defer src="../fork/splash.js"></script>
+
+<script>
+  window.addEventListener('load', function () {
+    var root = document.getElementById('dsh-startup-root')
+    var panel = document.getElementById('panel')
+    var glassOn = document.getElementById('glassOn')
+    var op = document.getElementById('op'), bl = document.getElementById('bl')
+    var sa = document.getElementById('sa'), bd = document.getElementById('bd')
+    var opv = document.getElementById('opv'), blv = document.getElementById('blv')
+    var sav = document.getElementById('sav'), bdv = document.getElementById('bdv')
+    var dark = new URLSearchParams(location.search).get('theme') === 'dark'
+    document.getElementById('themeBtn').textContent = dark ? '切换浅色' : '切换深色'
+
+    function apply() {
+      if (!root) return
+      root.style.setProperty('--dsu-glass-alpha', (op.value / 100).toFixed(2))
+      root.style.setProperty('--dsu-glass-blur', bl.value + 'px')
+      root.style.setProperty('--dsu-glass-sat', sa.value + '%')
+      root.style.setProperty('--dsu-backdrop-blur', bd.value + 'px')
+      opv.textContent = (op.value / 100).toFixed(2)
+      blv.textContent = bl.value + 'px'
+      sav.textContent = sa.value + '%'
+      bdv.textContent = bd.value + 'px'
+      if (glassOn.checked) {
+        root.classList.add('dsu-glass')
+        root.style.removeProperty('background')
+      } else {
+        root.classList.remove('dsu-glass')
+        root.style.setProperty('background', '#000', 'important')
+      }
+    }
+
+    ;[op, bl, sa, bd].forEach(function (el) { el.addEventListener('input', apply) })
+    glassOn.addEventListener('change', apply)
+    document.getElementById('replayBtn').addEventListener('click', function () { location.reload() })
+    document.getElementById('themeBtn').addEventListener('click', function () {
+      location.search = dark ? '?theme=light' : '?theme=dark'
+    })
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'h' || e.key === 'H') panel.classList.toggle('hide')
+    })
+    apply()
+  })
+</script>
+</body>
+</html>

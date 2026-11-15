@@ -1,0 +1,19 @@
+{
+  "enabled": true,
+  "displayMode": "always",
+  "themeOverride": "auto",
+  "darkWash": "soft",
+  "speed": 1.0,
+  "requireInteraction": true,
+  "voice": true,
+  "sound": true,
+  "identity": "OPERATOR",
+  "identityId": "auto",
+  "accessLevel": "auto",
+  "voiceGreeting": "Welcome to Anthropic's Claude. It's been a while.",
+  "welcomeTemplate": "欢迎 {identity} 访问",
+  "labelIdentity": "用户名称",
+  "labelIdentityId": "会话编号",
+  "labelAccessLevel": "访问等级",
+  "splashOnActivate": true
+}

@@ -1,0 +1,29 @@
+# macOS
+.DS_Store
+**/.DS_Store
+
+# 构建产物
+ClauEd.app/
+
+# 本地备份目录（改名/重构时留下的 .backup-*）
+.backup-*/
+**/.backup-*/
+
+# 生成文件（build.sh 会重新生成）
+fork/assets.js
+
+# 日志
+*.log
+
+# 本地工具状态（保留可共享的 .claude/launch.json）
+.claude/settings.local.json
+.impeccable/
+
+# 原始调研只留在本机；公开文档保留整理后的版本
+docs/移植调研-原始报告/
+
+# Release 打包产物
+dist/
+
+# 本机录屏
+*.mov

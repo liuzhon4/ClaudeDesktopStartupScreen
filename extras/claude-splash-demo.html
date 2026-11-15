@@ -1,0 +1,525 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Claude Desktop — Splash Concept</title>
+<style>
+  :root {
+    color-scheme: dark;
+    --ink: #0f0e0d;
+    --ink-2: #171412;
+    --ink-3: #241f1b;
+    --cream: #f5f0e6;
+    --coral: #cc785c;
+    --coral-soft: #e8a58c;
+    --muted: rgba(245, 240, 230, 0.46);
+    --muted-2: rgba(245, 240, 230, 0.24);
+    --line: rgba(245, 240, 230, 0.12);
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    height: 100%;
+    background: var(--ink);
+    overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Segoe UI", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    display: grid;
+    place-items: center;
+    cursor: default;
+  }
+
+  #splash {
+    position: fixed;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    background:
+      radial-gradient(90% 70% at 50% 38%, var(--ink-3) 0%, var(--ink-2) 48%, var(--ink) 100%);
+    transition: opacity 0.45s ease, transform 0.45s ease;
+    will-change: opacity, transform;
+  }
+
+  #splash.exiting {
+    opacity: 0;
+    transform: scale(1.015);
+  }
+
+  #splash.exiting.fast {
+    transition-duration: 0.25s;
+  }
+
+  /* ---------- atmosphere ---------- */
+
+  .glow {
+    position: absolute;
+    left: 50%;
+    top: 41%;
+    width: 72vmin;
+    height: 72vmin;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(
+      circle,
+      rgba(204, 120, 92, 0.20) 0%,
+      rgba(204, 120, 92, 0.07) 38%,
+      transparent 68%
+    );
+    filter: blur(28px);
+    opacity: 0;
+    animation: glow-in 1.8s ease 0.15s both, breathe 4.6s ease-in-out 1.9s infinite alternate;
+  }
+
+  .grain {
+    position: absolute;
+    inset: -20%;
+    opacity: 0.05;
+    mix-blend-mode: overlay;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
+  }
+
+  .vignette {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(
+      120% 100% at 50% 45%,
+      transparent 42%,
+      rgba(0, 0, 0, 0.34) 100%
+    );
+  }
+
+  .dust {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .dust span {
+    position: absolute;
+    left: var(--x);
+    top: var(--y);
+    width: var(--s);
+    height: var(--s);
+    border-radius: 50%;
+    background: var(--cream);
+    opacity: 0;
+    animation: mote var(--d) ease-in-out var(--delay) infinite alternate;
+    will-change: transform, opacity;
+  }
+
+  /* ---------- composition ---------- */
+
+  .composition {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transform: translateY(-1.5vh);
+  }
+
+  .spark {
+    width: clamp(180px, 30vmin, 260px);
+    height: auto;
+    overflow: visible;
+    color: var(--coral);
+  }
+
+  .ray {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 3.2;
+    stroke-linecap: round;
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation: draw 0.56s var(--ease) calc(0.18s + var(--i) * 0.038s) both;
+  }
+
+  .spark-glow {
+    filter: drop-shadow(0 0 7px rgba(204, 120, 92, 0.34));
+    opacity: 0.92;
+    animation: lit 1.4s ease 1.35s both;
+  }
+
+  .halo {
+    fill: none;
+    stroke: rgba(245, 240, 230, 0.055);
+    stroke-width: 1;
+    transform-origin: 120px 120px;
+    transform: scale(0.84);
+    opacity: 0;
+    animation: halo-in 1.2s var(--ease) 0.55s both;
+  }
+
+  .ring {
+    fill: none;
+    stroke: rgba(245, 240, 230, 0.30);
+    stroke-width: 0.9;
+    stroke-linecap: round;
+    stroke-dasharray: 0.16 0.84;
+    stroke-dashoffset: 0;
+    transform-origin: 120px 120px;
+    opacity: 0;
+    animation: orbit 1.7s var(--ease) 0.72s both;
+  }
+
+  .wordmark {
+    margin: 1.2vmin 0 0;
+    font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, "Times New Roman", serif;
+    font-weight: 400;
+    font-size: clamp(52px, 8.4vmin, 92px);
+    line-height: 1;
+    letter-spacing: -0.028em;
+    color: var(--cream);
+    text-shadow: 0 1px 24px rgba(245, 240, 230, 0.06);
+    user-select: none;
+  }
+
+  .wordmark span {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(14px);
+    filter: blur(8px);
+    animation: rise 0.78s var(--ease) calc(0.92s + var(--i) * 0.048s) both;
+    will-change: transform, opacity, filter;
+  }
+
+  .rule {
+    width: 0;
+    height: 1px;
+    margin-top: 3.2vmin;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(204, 120, 92, 0.72),
+      transparent
+    );
+    animation: rule-in 0.7s var(--ease) 1.52s both;
+  }
+
+  .caption {
+    margin: 1.5vmin 0 0;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.44em;
+    text-indent: 0.44em;
+    color: var(--muted);
+    opacity: 0;
+    animation: fade-in 0.8s ease 1.78s both;
+  }
+
+  /* ---------- progress + hint ---------- */
+
+  .progress {
+    position: fixed;
+    left: 50%;
+    bottom: 38px;
+    width: min(240px, 42vw);
+    height: 1px;
+    transform: translateX(-50%);
+    background: rgba(245, 240, 230, 0.12);
+    overflow: hidden;
+  }
+
+  .progress i {
+    display: block;
+    width: 100%;
+    height: 100%;
+    background: var(--coral);
+    transform: scaleX(0);
+    transform-origin: left center;
+    opacity: 0.75;
+    animation: progress 2.6s linear 0.12s both;
+  }
+
+  .hint {
+    position: fixed;
+    left: 50%;
+    bottom: 15px;
+    transform: translateX(-50%);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: var(--muted-2);
+    opacity: 0;
+    animation: fade-in 0.9s ease 1.6s both;
+    white-space: nowrap;
+  }
+
+  /* ---------- replay ---------- */
+
+  #replay {
+    position: fixed;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    background:
+      radial-gradient(80% 60% at 50% 42%, rgba(36, 31, 27, 0.9) 0%, var(--ink) 70%);
+  }
+
+  #replay[hidden] { display: none; }
+
+  .replay-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+    text-align: center;
+  }
+
+  .replay-mark {
+    width: 44px;
+    height: 44px;
+    color: var(--coral);
+    opacity: 0.9;
+  }
+
+  .replay-mark path {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 4.4;
+    stroke-linecap: round;
+  }
+
+  .replay-button {
+    appearance: none;
+    border: 1px solid rgba(204, 120, 92, 0.42);
+    background: rgba(204, 120, 92, 0.04);
+    color: var(--cream);
+    font: inherit;
+    font-size: 13px;
+    letter-spacing: 0.06em;
+    padding: 11px 22px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background 0.2s ease, border-color 0.2s ease;
+  }
+
+  .replay-button:hover {
+    background: rgba(204, 120, 92, 0.12);
+    border-color: rgba(204, 120, 92, 0.7);
+  }
+
+  .replay-button:focus-visible {
+    outline: 2px solid var(--coral-soft);
+    outline-offset: 3px;
+  }
+
+  .replay-note {
+    margin: 0;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: var(--muted-2);
+  }
+
+  /* ---------- keyframes ---------- */
+
+  @keyframes draw {
+    from { stroke-dashoffset: 1; }
+    to { stroke-dashoffset: 0; }
+  }
+
+  @keyframes lit {
+    from { opacity: 0.55; filter: drop-shadow(0 0 0 rgba(204, 120, 92, 0)); }
+    to { opacity: 0.95; filter: drop-shadow(0 0 9px rgba(204, 120, 92, 0.38)); }
+  }
+
+  @keyframes halo-in {
+    from { opacity: 0; transform: scale(0.78); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  @keyframes orbit {
+    0% { opacity: 0; transform: rotate(-36deg); }
+    18% { opacity: 0.55; }
+    100% { opacity: 0; transform: rotate(214deg); }
+  }
+
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(14px); filter: blur(8px); }
+    to { opacity: 1; transform: translateY(0); filter: blur(0); }
+  }
+
+  @keyframes rule-in {
+    from { width: 0; opacity: 0; }
+    to { width: min(190px, 28vw); opacity: 1; }
+  }
+
+  @keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes glow-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes breathe {
+    from { opacity: 0.72; transform: translate(-50%, -50%) scale(0.98); }
+    to { opacity: 1; transform: translate(-50%, -50%) scale(1.04); }
+  }
+
+  @keyframes progress {
+    from { transform: scaleX(0); }
+    to { transform: scaleX(1); }
+  }
+
+  @keyframes mote {
+    0% { opacity: 0; transform: translate3d(0, 8px, 0); }
+    35% { opacity: 0.45; }
+    100% { opacity: 0; transform: translate3d(var(--drift), -26px, 0); }
+  }
+
+  /* ---------- reduced motion ---------- */
+
+  @media (prefers-reduced-motion: reduce) {
+    .glow, .dust span, .hint, .caption, .rule, .ring, .halo {
+      animation: none !important;
+    }
+    .glow { opacity: 1; }
+    .hint, .caption { opacity: 1; }
+    .rule { width: min(190px, 28vw); opacity: 1; }
+    .ring, .halo { opacity: 0; }
+    .ray { animation: none !important; stroke-dashoffset: 0; }
+    .wordmark span { animation: none !important; opacity: 1; transform: none; filter: none; }
+    .progress i { animation: none !important; transform: scaleX(1); }
+  }
+
+  /* debug freeze: ?freeze=2200 */
+  .freeze *,
+  .freeze *::before,
+  .freeze *::after {
+    animation-play-state: paused !important;
+  }
+</style>
+</head>
+<body>
+
+<div id="splash" role="dialog" aria-label="Claude 启动画面">
+  <div class="glow"></div>
+  <div class="vignette"></div>
+  <div class="dust" id="dust" aria-hidden="true"></div>
+  <div class="grain"></div>
+
+  <div class="composition">
+    <svg class="spark" viewBox="0 0 240 240" aria-hidden="true">
+      <circle class="halo" cx="120" cy="120" r="104"></circle>
+      <circle class="ring" cx="120" cy="120" r="104" pathLength="1"></circle>
+      <g class="spark-glow" id="rays"></g>
+    </svg>
+
+    <h1 class="wordmark" aria-label="Claude">
+      <span style="--i:0">C</span><span style="--i:1">l</span><span style="--i:2">a</span><span style="--i:3">u</span><span style="--i:4">d</span><span style="--i:5">e</span>
+    </h1>
+    <div class="rule"></div>
+    <p class="caption">desktop</p>
+  </div>
+
+  <div class="progress" aria-hidden="true"><i></i></div>
+  <div class="hint">点击任意处跳过</div>
+</div>
+
+<div id="replay" hidden>
+  <div class="replay-card">
+    <svg class="replay-mark" viewBox="0 0 48 48" aria-hidden="true">
+      <path d="M24 5v11M24 32v11M5 24h11M32 24h11M10.6 10.6l7.8 7.8M29.6 29.6l7.8 7.8M37.4 10.6l-7.8 7.8M18.4 29.6l-7.8 7.8"></path>
+    </svg>
+    <button class="replay-button" id="replayBtn" type="button">重播开屏</button>
+    <p class="replay-note">Claude Desktop · splash concept · 2.8s animation</p>
+  </div>
+</div>
+
+<script>
+(() => {
+  "use strict";
+
+  const params = new URLSearchParams(location.search);
+  const hold = params.has("hold");
+  const freeze = Number(params.get("freeze"));
+  const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* 12 rays, alternating lengths, drawn one by one */
+  const rays = document.getElementById("rays");
+  const NS = "http://www.w3.org/2000/svg";
+  for (let i = 0; i < 12; i++) {
+    const angle = i * 30;
+    const long = i % 2 === 0;
+    const inner = 20;
+    const outer = long ? 88 : 76;
+    const p = document.createElementNS(NS, "path");
+    p.setAttribute("d", `M120 ${120 - inner} L120 ${120 - outer}`);
+    p.setAttribute("transform", `rotate(${angle} 120 120)`);
+    p.setAttribute("pathLength", "1");
+    p.setAttribute("class", "ray");
+    p.style.setProperty("--i", String(i));
+    rays.appendChild(p);
+  }
+
+  /* deterministic dust */
+  const dust = document.getElementById("dust");
+  let seed = 20261113;
+  const rand = () => {
+    seed = (seed * 1664525 + 1013904223) >>> 0;
+    return seed / 4294967296;
+  };
+  for (let i = 0; i < 18; i++) {
+    const s = document.createElement("span");
+    s.style.setProperty("--x", `${(rand() * 100).toFixed(2)}%`);
+    s.style.setProperty("--y", `${(rand() * 100).toFixed(2)}%`);
+    s.style.setProperty("--s", `${(0.6 + rand() * 1.4).toFixed(2)}px`);
+    s.style.setProperty("--d", `${(5 + rand() * 6).toFixed(2)}s`);
+    s.style.setProperty("--delay", `${(rand() * 4).toFixed(2)}s`);
+    s.style.setProperty("--drift", `${(-10 + rand() * 20).toFixed(1)}px`);
+    dust.appendChild(s);
+  }
+
+  if (freeze) {
+    setTimeout(() => document.documentElement.classList.add("freeze"), freeze);
+  }
+
+  const splash = document.getElementById("splash");
+  const replay = document.getElementById("replay");
+  const replayBtn = document.getElementById("replayBtn");
+  let exited = false;
+
+  function exit(fast = false) {
+    if (exited) return;
+    exited = true;
+    splash.classList.add("exiting");
+    if (fast) splash.classList.add("fast");
+    setTimeout(() => {
+      splash.style.display = "none";
+      replay.hidden = false;
+      replayBtn.focus({ preventScroll: true });
+    }, fast ? 260 : 470);
+  }
+
+  /* A real splash would exit at ~2800ms. The demo holds a little longer
+     so the composition can be inspected. */
+  const exitAt = hold ? Infinity : (reduced ? 1600 : 4600);
+  if (exitAt !== Infinity) setTimeout(() => exit(false), exitAt);
+
+  splash.addEventListener("click", () => exit(true));
+  addEventListener("keydown", (e) => {
+    if (e.key === "Escape" || e.key === " " || e.key === "Enter") exit(true);
+  });
+
+  replayBtn.addEventListener("click", () => {
+    const url = new URL(location.href);
+    url.search = "";
+    location.href = url.toString();
+  });
+})();
+</script>
+</body>
+</html>

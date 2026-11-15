@@ -1,0 +1,32 @@
+MIT License
+
+Copyright (c) 2026 沈宏宏 (dsh-startup-screen, https://github.com/6shenhonghong9/dsh-startup-screen)
+Copyright (c) 2026 Edward (ClauEd fork: Claude branding, dark theme adaptation, macOS launcher)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+The Software is provided "AS IS", without warranty of any kind, express or
+implied, including but not limited to the warranties of merchantability,
+fitness for a particular purpose and noninfringement. In no event shall the
+authors or copyright holders be liable for any claim, damages or other
+liability, whether in an action of contract, tort or otherwise, arising from,
+out of or in connection with the Software or the use or other dealings in the
+Software.
+
+---
+
+NOTE: The MIT License above covers source code and original text. Audio files,
+the ClauEd application icon, and the Claude/Anthropic names and marks are not
+relicensed under MIT. The maintainer has confirmed redistribution permission
+for the audio files included in this repository; see NOTICE for the asset
+boundaries. The application icon is an original C-shaped startup-window mark,
+not the Claude Desktop icon. This is an unofficial project and is not
+affiliated with or endorsed by Anthropic.

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+  <title>ClauEd app icon — C-shaped startup window</title>
+  <rect x="32" y="32" width="960" height="960" rx="220" fill="#F5F0E6"/>
+  <g transform="translate(152 160) scale(3)" fill="#C46645">
+    <path fill-rule="evenodd" d="M72 24H160Q208 24 208 72V184Q208 208 184 208H72Q24 208 24 184V72Q24 24 72 24ZM98 72H146C160.4 72 172 83.6 172 98V146C172 160.4 160.4 172 146 172H98C83.6 172 72 160.4 72 146V98C72 83.6 83.6 72 98 72ZM140 104H224V152H140Z"/>
+    <rect x="156" y="114" width="68" height="28" rx="14"/>
+  </g>
+</svg>

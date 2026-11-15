@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Claude</title>
+<link rel="stylesheet" href="splash.css">
+<style>
+  /* 壳页面自己的最小 reset：页面、root、窗口三层都压黑，任何一帧都不白闪 */
+  html, body { margin: 0; height: 100%; overflow: hidden; background: #000; }
+  body { -webkit-user-select: none; user-select: none; cursor: default; }
+  /* critical CSS：原 Host 侧的四条（splash.css 本身不含），保证脚本未跑起来时也是黑幕 */
+  html.dsu-lock, html.dsu-lock body { overflow: hidden !important; }
+  html.dsu-lock body { background-color: #000 !important; }
+  #dsh-startup-root.dsu-boot { position: fixed; inset: 0; z-index: 2147483000; background: #000; }
+</style>
+</head>
+<body>
+
+<div id="dsh-startup-root" class="dsu-root dsu-boot"></div>
+
+<script>
+  /* 默认配置（Claude 值）。启动器会在 documentStart 注入 window.__DSH_STARTUP__（同样字段），
+     此处合并时注入值优先；直接在 Chrome 打开本页也能完整播放。 */
+  window.__CLAUDE_DEFAULT_CFG__ = {
+    enabled: true,
+    mode: 'always',
+    theme: 'light',
+    speed: 1.0,
+    requireInteraction: true,
+    allowSkip: true,
+    sound: true,
+    soundVolume: 0.5,
+    voice: true,
+    voiceLang: 'en',
+    voiceName: '',
+    voiceRate: 0.88,
+    voicePitch: 0.85,
+    voiceVolume: 0.9,
+    voiceCue: true,
+    sfx: 'audio',
+    voiceSource: 'asset',
+    voiceLead: 240,
+    identity: 'OPERATOR',
+    identityId: 'auto',
+    accessLevel: 'auto',
+    voiceGreeting: "Welcome to Anthropic's Claude. It's been a while.",
+    welcomeTemplate: '欢迎 {identity} 访问',
+    labelIdentity: '用户名称',
+    labelIdentityId: '会话编号',
+    labelAccessLevel: '访问等级',
+    brand1: 'CLAUDE',
+    brand2: 'ANTHROPIC',
+    brand3a: '',
+    brand3b: '',
+    orgZh: 'CLAUDE',
+    orgEn: 'ANTHROPIC',
+    orgSub: 'CLAUDE DESKTOP',
+    welcomeBox: 'CLAUDE',
+    footer: 'POWERED BY ANTHROPIC',
+    accent: '#cc785c',
+    glitchA: '#d97757',
+    glitchB: '#6a9bcc',
+    darkWash: 'soft'
+  }
+  window.__DSH_STARTUP__ = Object.assign({}, window.__CLAUDE_DEFAULT_CFG__, window.__DSH_STARTUP__ || {})
+
+  /* 离线预览便利参数：?theme=dark&speed=2&voice=0&sound=0&interact=1 */
+  try {
+    var q = new URLSearchParams(location.search)
+    if (q.get('theme')) window.__DSH_STARTUP__.theme = q.get('theme')
+    if (q.get('speed')) window.__DSH_STARTUP__.speed = Number(q.get('speed'))
+    if (q.get('voice') === '0') window.__DSH_STARTUP__.voice = false
+    if (q.get('sound') === '0') window.__DSH_STARTUP__.sound = false
+    if (q.get('interact') === '1') window.__DSH_STARTUP__.requireInteraction = true
+    if (q.get('interact') === '0') window.__DSH_STARTUP__.requireInteraction = false
+    ;['identity', 'identityId', 'accessLevel', 'voiceGreeting', 'welcomeTemplate',
+      'labelIdentity', 'labelIdentityId', 'labelAccessLevel'].forEach(function (key) {
+      if (q.has(key)) window.__DSH_STARTUP__[key] = q.get(key)
+    })
+    if (q.get('perf') === '1') window.__DSH_PERF__ = true
+  } catch (e) { /* noop */ }
+
+  window.__DSH_STARTUP_SCRIPT_URL__ = 'splash.js'
+  document.documentElement.classList.add('dsu-lock')
+
+  /* 启动器消息桥：done/error 通知 Swift。Chrome 预览里 window.webkit 不存在，自动空转。 */
+  ;(function bridge() {
+    function post(name, payload) {
+      try { window.webkit.messageHandlers[name].postMessage(payload == null ? null : payload) } catch (e) {}
+    }
+    /* 引擎在 window 上派发该事件（window.dispatchEvent），必须监听 window */
+    window.addEventListener('dsh-startup:done', function () { post('done') })
+    document.addEventListener('dsh-startup:done', function () { post('done') })
+    window.addEventListener('error', function (e) { post('error', String(e.message || e.error || 'error')) }, true)
+    window.addEventListener('unhandledrejection', function () { post('error', 'unhandledrejection') })
+  })()
+
+  /* 9 秒兜底：时间线压根没跑起来时拆掉黑罩（引擎内部另有 9s/15s 看门狗） */
+  setTimeout(function () {
+    try {
+      if (window.__DSH_STARTUP_RUNNING__ === true) return
+      var r = document.getElementById('dsh-startup-root')
+      if (r && r.parentNode) r.parentNode.removeChild(r)
+      document.documentElement.classList.remove('dsu-lock')
+      if (document.body) document.body.style.overflow = ''
+      window.__DSH_STARTUP_FAILED__ = true
+    } catch (e) { /* noop */ }
+  }, 9000)
+</script>
+
+<script src="assets.js"></script>
+<script defer src="splash.js"></script>
+</body>
+</html>
