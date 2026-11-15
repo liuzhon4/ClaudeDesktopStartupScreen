@@ -6,13 +6,19 @@
   <p>An unofficial, standalone startup-screen launcher for Claude Desktop on macOS.</p>
 </div>
 
+> **建议使用 AI 工具直接 Fork 并解析本项目：让 AI 读代码、讲结构、帮你改主题、文案和动画。欢迎魔改，欢迎做出自己的版本。**
+
 ## 双主题预览
 
-| 亮色主题 | 暗色主题 |
-|---|---|
-| ![ClauEd 亮色开屏动画](extras/splash-light.gif) | ![ClauEd 暗色开屏动画](extras/splash-dark.gif) |
+### 亮色主题
 
-实际开屏录制；预览使用 `speed=1.6`，关闭语音与交互等待。
+![ClauEd 亮色开屏动画](extras/splash-light.gif)
+
+### 暗色主题
+
+![ClauEd 暗色开屏动画](extras/splash-dark.gif)
+
+实际开屏原速录制（`speed=1.0`），关闭语音与交互等待；1200×750 大尺寸循环预览。
 
 ## 致敬与来源
 
